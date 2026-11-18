@@ -1,0 +1,10 @@
+{
+  "appId": "com.aerojet.chairbook",
+  "appName": "Chair Book",
+  "webDir": "www",
+  "backgroundColor": "#121212",
+  "android": { "backgroundColor": "#121212" },
+  "plugins": {
+    "LocalNotifications": { "smallIcon": "ic_stat_chairbook", "iconColor": "#6fd0bf" }
+  }
+}

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Chair Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121212;--card:#1d1d1d;--card2:#272727;--line:#2f2f2f;--text:#f2f2f2;--mute:#9b9b9b;--teal:#6fd0bf;--teal2:#0f5a4f;--red:#ff8080;--amber:#f0c36b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Montserrat,system-ui,sans-serif;font-size:16px}
+body{padding:env(safe-area-inset-top) 0 calc(84px + env(safe-area-inset-bottom))}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:#1a1a1a;border-bottom:1px solid var(--line);padding:12px 16px 10px}
+.brand{display:flex;align-items:center;justify-content:space-between}
+.brand h1{margin:0;font-size:20px;font-weight:800;letter-spacing:.3px}
+.brand h1 span{color:var(--teal)}
+.gear{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--mute);display:flex;align-items:center;justify-content:center}
+.appt.block{background:#181818}.appt.block .n{color:var(--mute);font-style:italic}
+.bday{padding:8px 16px;background:#1f1a10;color:var(--amber);font-size:13px;font-weight:700;border-bottom:1px solid var(--line)}
+.due{display:flex;align-items:center;gap:10px;background:#16211f;border-bottom:1px solid var(--line);padding:12px 16px}
+.due .main{flex:1;min-width:0}.due b{display:block;font-size:16px}.due small{color:var(--mute);font-weight:600;font-size:13px}
+.mini{padding:9px 14px;border-radius:10px;border:0;background:var(--teal2);color:#fff;font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap}
+.mini.ghost{background:var(--card2);color:var(--text)}
+.sub{color:var(--mute);font-size:13px;font-weight:600}
+.banner{margin:10px 16px 0;padding:10px 12px;border-radius:10px;background:#2a2412;color:var(--amber);font-size:13px;font-weight:600}
+main{padding:8px 0 20px}
+.weeknav{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+.weeknav .rng{font-weight:800;font-size:18px;text-align:center}
+.weeknav .rng small{display:block;color:var(--mute);font-size:12px;font-weight:600;margin-top:2px}
+.iconbtn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.pill{border:1px solid var(--teal2);background:transparent;color:var(--teal);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+.day{margin:0 0 6px}
+.dayh{display:flex;align-items:baseline;gap:8px;padding:12px 16px 6px;color:var(--mute);font-weight:700;font-size:13px;letter-spacing:.6px;text-transform:uppercase}
+.dayh b{color:var(--text);font-size:15px;letter-spacing:.8px}
+.dayh.today b,.dayh.today{color:var(--teal)}
+.dayh .cnt{margin-left:auto;font-size:12px}
+.appt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:0;border-bottom:1px solid var(--line);padding:12px 16px}
+.appt .t{font-size:26px;font-weight:800;min-width:96px;line-height:1}
+.appt .t sup{font-size:11px;font-weight:700;margin-left:2px;vertical-align:top}
+.appt .n{font-size:18px;font-weight:700;flex:1;min-width:0}
+.appt .n small{display:block;font-size:13px;color:var(--mute);font-weight:600;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appt.past{opacity:.6}
+.appt.noshow .n{text-decoration:line-through;color:var(--mute)}
+.tag{font-size:11px;font-weight:800;padding:3px 7px;border-radius:6px;background:var(--card2);color:var(--mute);white-space:nowrap}
+.tag.rep{color:var(--teal)}
+.tag.ns{color:var(--red)}
+.open{padding:10px 16px;color:#5c5c5c;font-size:14px;font-weight:600;background:var(--card);border-bottom:1px solid var(--line)}
+.empty{padding:40px 24px;text-align:center;color:var(--mute);font-weight:600;line-height:1.5}
+.search{margin:10px 16px;display:block;width:calc(100% - 32px);padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:0;border-bottom:1px solid var(--line);padding:14px 16px}
+.row .main{flex:1;min-width:0}
+.row .main b{display:block;font-size:17px}
+.row .main small{color:var(--mute);font-weight:600;font-size:13px}
+.row .side{color:var(--mute);font-size:13px;font-weight:700;text-align:right}
+.sec{padding:16px 16px 6px;color:var(--teal);font-weight:700;font-size:14px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 10px}
+.cal .h{text-align:center;color:var(--mute);font-size:11px;font-weight:700;padding:4px 0}
+.cal button{aspect-ratio:1/1;border:0;border-radius:10px;background:var(--card);font-weight:700;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.cal button.blank{background:transparent;pointer-events:none}
+.cal button .d{font-size:10px;color:var(--teal);font-weight:800;min-height:12px}
+.cal button.sel{outline:2px solid var(--teal)}
+.cal button.today{color:var(--teal)}
+.cal button.fut{color:#666}
+.stats{display:flex;gap:8px;padding:6px 16px}
+.stat{flex:1;background:var(--card);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:22px}
+.stat span{color:var(--mute);font-size:12px;font-weight:600}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;background:#1a1a1a;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:transparent;padding:10px 0 12px;color:var(--mute);font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--teal)}
+.fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:7;width:60px;height:60px;border-radius:50%;border:0;background:var(--teal2);color:#fff;font-size:32px;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+#sheet{position:fixed;inset:0;z-index:20;display:none}
+#sheet.on{display:block}
+#sheet .scrim{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+#sheet .panel{position:absolute;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:#1b1b1b;border-radius:18px 18px 0 0;padding:8px 18px calc(22px + env(safe-area-inset-bottom))}
+.x{position:absolute;right:12px;top:10px;width:38px;height:38px;border-radius:50%;border:0;background:var(--card2);color:var(--mute);font-size:24px;line-height:1}
+.panel{position:relative}
+.grab{width:42px;height:5px;border-radius:3px;background:#444;margin:6px auto 12px}
+.panel h2{margin:4px 0 4px;font-size:22px;font-weight:800}
+.panel .meta{color:var(--mute);font-weight:600;font-size:14px;margin-bottom:14px}
+label{display:block;color:var(--mute);font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin:14px 0 6px}
+.inp{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:16px}
+textarea.inp{min-height:76px;resize:vertical}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 0;width:calc((100% - 36px)/7);font-size:12px;font-weight:700;text-align:center;line-height:1.25}
+.chip.on{border-color:var(--teal);color:var(--teal);background:#132b27}
+.sugg{display:flex;flex-direction:column;margin-top:4px;border-radius:12px;overflow:hidden}
+.sugg button{text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--card2);padding:11px 14px;font-weight:700}
+.sugg button small{color:var(--mute);font-weight:600;margin-left:6px}
+.toggle{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding:12px 14px;border-radius:12px;background:var(--card)}
+.toggle b{font-size:15px}.toggle small{display:block;color:var(--mute);font-size:12px;font-weight:600;margin-top:2px}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;border-radius:15px;background:#3a3a3a;transition:.2s}
+.sw span:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;border-radius:50%;background:#bbb;transition:.2s}
+.sw input:checked+span{background:var(--teal2)}
+.sw input:checked+span:before{transform:translateX(20px);background:var(--teal)}
+.btns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{flex:1;min-width:120px;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:15px;text-align:center;text-decoration:none;color:var(--text)}
+.btn.pri{background:var(--teal2);border-color:var(--teal2);color:#fff}
+.btn.danger{color:var(--red)}
+.btn.warn{color:var(--amber)}
+.phone{font-size:15px;font-weight:700;color:var(--teal);margin:-6px 0 10px}
+.note{background:var(--card);border-radius:12px;padding:12px 14px;font-weight:600;line-height:1.45;white-space:pre-wrap}
+.hist{border-radius:12px;overflow:hidden;margin-top:6px}
+.hist div{display:flex;justify-content:space-between;gap:10px;background:var(--card);border-bottom:1px solid var(--line);padding:11px 14px;font-weight:600;font-size:14px}
+.hist div span:last-child{color:var(--mute)}
+#toast{position:fixed;left:50%;bottom:calc(160px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:30;max-width:88vw;text-align:center}
+#toast.on{opacity:1}
+.foot{padding:20px 16px;color:var(--mute);font-size:12px;font-weight:600;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><h1>Chair<span>Book</span></h1><button class="gear" data-act="settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
+</header>
+<div id="banner"></div>
+<main id="main"><div class="empty">Opening your book…</div></main>
+<button class="fab" id="fab" data-act="add" aria-label="Add appointment">+</button>
+<nav id="nav">
+  <button data-tab="week" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Week</button>
+  <button data-tab="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 20c0-3-2-5-5-5"/></svg>Clients</button>
+  <button data-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 3"/></svg>History</button>
+  <button data-tab="regulars"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg>Regulars</button>
+</nav>
+<div id="sheet"><div class="scrim" data-act="close"></div><div class="panel"><div class="grab"></div><button class="x" data-act="close" aria-label="Close">×</button><div id="sbody"></div></div></div>
+<div id="toast"></div>
+
+<script>
+/* ---------- utilities ---------- */
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return ymd(d)};
+const weekOf=s=>{const d=parse(s);d.setDate(d.getDate()-d.getDay());return ymd(d)};
+const today=()=>ymd(new Date());
+const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const fmtD=s=>{const d=parse(s);return `${MON[d.getMonth()]} ${d.getDate()}`};
+const fmtDL=s=>{const d=parse(s);return `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`};
+const t12=t=>{if(!t)return{h:'',ap:''};let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return{h:`${h}:${pad(m)}`,ap}};
+const t12s=t=>{const x=t12(t);return `${x.h} ${x.ap}`};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
+const daysBetween=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
+const ago=s=>{const n=daysBetween(s,today());if(n===0)return'today';if(n===1)return'yesterday';if(n<0)return`in ${-n} days`;if(n<14)return`${n} days ago`;if(n<60)return`${Math.round(n/7)} weeks ago`;return fmtD(s)};
+const telHref=p=>String(p||'').replace(/[^\d+]/g,'');
+const clone=o=>JSON.parse(JSON.stringify(o));
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200)}
+
+/* ---------- state ---------- */
+const S={mode:'loading',weeks:{},clients:{},regulars:{},meta:{},tab:'week',week:weekOf(today()),
+  hMonth:today().slice(0,7),hDay:today(),cq:'',hq:''};
+
+/* ---------- storage: cloud (db) with on-device fallback ---------- */
+let base=null;const pending={};const chains={};
+const KINDS=['weeks','clients','regulars','meta'];
+const NATIVE=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+const P=n=>(window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins[n])||null;
+const DEF={barber:'',remindMins:30,morning:true,morningTime:'08:00',dueDays:21,
+  tplRemind:"Hey {first}, it's {me}. Just a reminder, I've got you {day} at {time}. See you then!",
+  tplDue:"Hey {first}, it's {me}. It's been a minute. You ready for a cut? Let me know what day works for you."};
+const SET=()=>Object.assign({},DEF,(S.meta.settings)||{});
+const blob=()=>JSON.stringify({app:'chairbook',v:1,weeks:S.weeks,clients:S.clients,regulars:S.regulars,meta:S.meta});
+let saveT;
+function saveLocal(){clearTimeout(saveT);saveT=setTimeout(async()=>{
+  const j=blob();
+  if(NATIVE&&P('Preferences')){try{await P('Preferences').set({key:'chairbook.v1',value:j})}catch(e){toast("Couldn't save on this phone")}}
+  else{try{localStorage.setItem('chairbook.v1',j)}catch(e){}}
+  scheduleReminders();
+},250)}
+async function loadLocal(){let raw=null;
+  if(NATIVE&&P('Preferences')){try{raw=(await P('Preferences').get({key:'chairbook.v1'})).value}catch(e){}}
+  else{try{raw=localStorage.getItem('chairbook.v1')}catch(e){}}
+  try{const j=JSON.parse(raw||'{}');KINDS.forEach(k=>S[k]=j[k]||{})}catch(e){}}
+function persist(kind,id){
+  if(S.mode==='local'){saveLocal();return}
+  if(!base)return;
+  const key=kind+'/'+id;const data=S[kind][id]?clone(S[kind][id]):null;
+  pending[key]=(pending[key]||0)+1;
+  const ref=base.collection(kind).doc(id);
+  const run=()=>data?ref.set(data):ref.delete();
+  chains[key]=(chains[key]||Promise.resolve()).then(async()=>{
+    try{await run()}
+    catch(e){
+      if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,700+Math.random()*900));try{await run()}catch(e2){toast("Couldn't save. Check your connection.")}}
+      else if(e&&e.code==='quota_exceeded')toast('Your book is full. Contact support.');
+      else toast("Couldn't save that change.");
+    }finally{pending[key]--}
+  });
+}
+function applySnap(kind,snap){
+  const m={};snap.docs.forEach(d=>{m[d.id]=clone(d.data())});
+  Object.keys(pending).forEach(key=>{const[k,id]=key.split('/');if(k!==kind||!pending[key])return;
+    if(S[kind][id])m[id]=S[kind][id];else delete m[id]});
+  S[kind]=m;
+}
+async function initStore(){
+  let db=null,u=null,id=null;
+  try{
+    if(!NATIVE&&typeof claude!=='undefined'&&claude.use){db=await claude.use('db');u=await claude.use('user');id=u?await u.id():null}
+  }catch(e){}
+  if(!db||!id){S.mode='local';await loadLocal();
+    if(!NATIVE)setBanner('Saving on this phone only. Open this page in the Claude app while signed in to keep your book synced and backed up.');
+    afterLoad();if(NATIVE)initNotifications();return}
+  base=db.doc(`data/users/${id}/book`);
+  const loaded={};let first=true;
+  const slow=setTimeout(()=>{if(S.mode==='loading')setBanner("Still connecting to your book… your list will appear when it's reachable.")},10000);
+  KINDS.forEach(kind=>{
+    base.collection(kind).onSnapshot(snap=>{
+      applySnap(kind,snap);
+      if(!snap.metadata.fromCache)loaded[kind]=true;
+      if(first&&KINDS.every(k=>loaded[k])){first=false;clearTimeout(slow);S.mode='cloud';setBanner('');afterLoad();return}
+      if(!first)render();
+    },err=>{clearTimeout(slow);setBanner("Your book can't be reached right now. Reopen the page to try again.");if(S.mode==='loading'){S.mode='cloud';render()}});
+  });
+}
+function setBanner(t){$('#banner').innerHTML=t?`<div class="banner">${esc(t)}</div>`:''}
+function afterLoad(){ensureWeek(S.week);render()}
+
+/* ---------- domain ---------- */
+const thisWeek=()=>weekOf(today());
+function getWeek(wk){
+  let w=S.weeks[wk],changed=false;
+  if(!w){w=S.weeks[wk]={start:wk,seeded:false,appts:[]};changed=true}
+  if(!w.seeded){
+    if(wk>=thisWeek()){
+      Object.values(S.regulars).filter(r=>r.active!==false).forEach(r=>{
+        const date=addDays(wk,r.dow);
+        if(r.since&&date<r.since)return;
+        if(!w.appts.some(a=>a.regularId===r.id))w.appts.push({id:uid(),date,time:r.time,name:r.name,clientId:r.clientId,note:r.note||'',status:'booked',regularId:r.id});
+      });
+    }
+    w.seeded=true;changed=true;
+  }
+  return{w,changed};
+}
+function ensureWeek(wk){if(S.mode==='loading')return;if(wk<thisWeek()&&!S.weeks[wk])return;const{changed}=getWeek(wk);if(changed)persist('weeks',wk)}
+const allAppts=()=>Object.values(S.weeks).flatMap(w=>w.appts||[]);
+const counted=a=>a.status!=='noshow'&&!a.block;
+function findAppt(id){for(const wk in S.weeks){const a=(S.weeks[wk].appts||[]).find(x=>x.id===id);if(a)return{a,wk}}return null}
+function clientByName(n){n=n.trim().toLowerCase();return Object.values(S.clients).find(c=>c.name.trim().toLowerCase()===n)}
+function visitsFor(c){return allAppts().filter(a=>!a.block&&(a.clientId===c.id||(!a.clientId&&a.name.toLowerCase()===c.name.toLowerCase()))&&a.date<=today()&&counted(a)).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time))}
+function lastVisit(c){const v=visitsFor(c);return v[0]?v[0].date:null}
+function nextVisit(c){return allAppts().filter(a=>!a.block&&a.clientId===c.id&&a.date>today()&&a.status==='booked').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0]}
+
+function againDates(d){let b=d;while(addDays(b,7)<=today())b=addDays(b,7);return[1,2,3,4].map(n=>addDays(b,7*n))}
+const firstName=n=>String(n||'').trim().split(/\s+/)[0];
+function fillTpl(t,a,c){const st=SET();const d=a?parse(a.date):null;
+  const dayWord=a?(a.date===today()?'today':(a.date===addDays(today(),1)?'tomorrow':`${DOW[d.getDay()]} ${fmtD(a.date)}`)):'';
+  return t.replace(/\{first\}/g,firstName(c?c.name:a&&a.name)).replace(/\{me\}/g,st.barber||'your barber').replace(/\{day\}/g,dayWord).replace(/\{time\}/g,a?t12s(a.time):'')}
+const smsHref=(p,body)=>`sms:${telHref(p)}${body?`?body=${encodeURIComponent(body)}`:''}`;
+function usualGap(c){const v=visitsFor(c);if(v.length<3)return null;const g=[];for(let i=0;i<Math.min(v.length-1,6);i++)g.push(daysBetween(v[i+1].date,v[i].date));return Math.max(7,Math.round(g.reduce((s,x)=>s+x,0)/g.length))}
+function dueList(){const td=today();return Object.values(S.clients).map(c=>{const last=lastVisit(c);if(!last||nextVisit(c))return null;
+  const gap=usualGap(c)||SET().dueDays;const since=daysBetween(last,td);return since>=gap?{c,last,since,gap}:null}).filter(Boolean).sort((a,b)=>(b.since-b.gap)-(a.since-a.gap))}
+const bdaysOn=date=>Object.values(S.clients).filter(c=>c.bday&&c.bday===date.slice(5));
+
+/* ---------- views ---------- */
+function render(){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===S.tab));
+  $('#fab').style.display=(S.tab==='week'||S.tab==='clients'||S.tab==='regulars')?'':'none';
+  const m=$('#main');
+  if(S.mode==='loading'){m.innerHTML='<div class="empty">Opening your book…</div>';return}
+  const v={week:viewWeek,clients:viewClients,history:viewHistory,regulars:viewRegulars}[S.tab];
+  m.innerHTML=v();
+  if(S.tab==='clients')renderClientList();
+  if(S.tab==='history')renderHistSearch();
+}
+function apptRow(a){
+  if(a.block){const t=t12(a.time);return `<button class="appt block" data-act="appt" data-id="${a.id}"><div class="t" style="font-size:${a.time?26:15}px">${a.time?`${t.h}<sup>${t.ap}</sup>`:'ALL DAY'}</div><div class="n">${esc(a.name||'Blocked')}</div><span class="tag">BLOCKED</span></button>`}
+  const t=t12(a.time),past=a.date<today();
+  const tags=[];if(a.regularId)tags.push('<span class="tag rep">↻ WEEKLY</span>');if(a.status==='noshow')tags.push('<span class="tag ns">NO-SHOW</span>');
+  return `<button class="appt ${past?'past':''} ${a.status==='noshow'?'noshow':''}" data-act="appt" data-id="${a.id}">
+    <div class="t">${t.h}<sup>${t.ap}</sup></div><div class="n">${esc(a.name)}${a.note?`<small>${esc(a.note)}</small>`:''}</div>${tags.join('')}</button>`;
+}
+function viewWeek(){
+  const wk=S.week,w=S.weeks[wk],appts=(w&&w.appts)||[],td=today(),isNow=wk===thisWeek();
+  const end=addDays(wk,6);const n=appts.filter(counted).length;
+  let h=`<div class="weeknav"><button class="iconbtn" data-act="wk" data-d="-7" aria-label="Previous week">‹</button>
+    <div class="rng">${fmtD(wk)} – ${parse(wk).getMonth()===parse(end).getMonth()?parse(end).getDate():fmtD(end)}
+    <small>${isNow?'This week':''}${isNow?' · ':''}${n} ${n===1?'client':'clients'} ${!isNow?`· <button class="pill" data-act="wk" data-d="0">Back to this week</button>`:''}</small></div>
+    <button class="iconbtn" data-act="wk" data-d="7" aria-label="Next week">›</button></div>`;
+  if(wk<thisWeek()&&!appts.length)return h+'<div class="empty">Nothing was written down for this week.</div>';
+  for(let i=0;i<7;i++){
+    const date=addDays(wk,i),list=appts.filter(a=>a.date===date).sort((a,b)=>a.time.localeCompare(b.time));
+    const nc=list.filter(counted).length,bd=bdaysOn(date);
+    h+=`<div class="day"><div class="dayh ${date===td?'today':''}"><b>${DOW[i]}</b> ${fmtD(date)}${date===td?' · Today':''}<span class="cnt">${nc||''}</span></div>`;
+    if(bd.length)h+=`<div class="bday">🎂 ${bd.map(c=>esc(c.name)).join(', ')} — birthday</div>`;
+    h+=list.length?list.map(apptRow).join(''):(date>=td?`<button class="open" style="width:100%;text-align:left;border:0" data-act="add" data-date="${date}">Open · tap to book</button>`:'<div class="open">—</div>');
+    if(list.length&&date>=td)h+=`<button class="open" style="width:100%;text-align:left;border:0;color:#4d4d4d;padding:7px 16px;font-size:13px" data-act="add" data-date="${date}">+ Add to ${DOW[i]}</button>`;
+    h+='</div>';
+  }
+  return h;
+}
+function viewClients(){
+  const n=Object.keys(S.clients).length;
+  return `<input class="search" id="cq" placeholder="Search ${n} client${n===1?'':'s'}…" value="${esc(S.cq)}" autocomplete="off"><div id="clist"></div>`;
+}
+function renderClientList(){
+  const q=S.cq.trim().toLowerCase();
+  const list=Object.values(S.clients).filter(c=>!q||c.name.toLowerCase().includes(q)||(c.phone||'').includes(q))
+    .map(c=>({c,last:lastVisit(c)})).sort((a,b)=>a.c.name.localeCompare(b.c.name));
+  const due=q?[]:dueList();
+  const dueH=due.length?`<div class="sec">Due for a cut (${due.length})</div>`+due.slice(0,15).map(({c,last,since,gap})=>`<div class="due">
+    <button class="main" style="background:none;border:0;text-align:left;padding:0" data-act="client" data-id="${c.id}"><b>${esc(c.name)}</b><small>Last cut ${since} days ago · usually every ${gap}</small></button>
+    ${c.phone?`<a class="mini" href="${smsHref(c.phone,fillTpl(SET().tplDue,null,c))}">Text</a>`:''}</div>`).join('')+`<div class="sec">All clients</div>`:'';
+  $('#clist').innerHTML=dueH+(list.length?list.map(({c,last})=>`<button class="row" data-act="client" data-id="${c.id}">
+    <div class="main"><b>${esc(c.name)}</b><small>${c.phone?esc(c.phone):'No number saved'}</small></div>
+    <div class="side">${last?'Last cut<br>'+ago(last):'No cuts yet'}</div></button>`).join('')
+    :`<div class="empty">${q?'No client by that name.':'Your clients show up here as you book them. Tap + to add one.'}</div>`);
+}
+function viewHistory(){
+  const[y,mo]=S.hMonth.split('-').map(Number);const first=new Date(y,mo-1,1),days=new Date(y,mo,0).getDate(),td=today();
+  const all=allAppts().filter(counted);
+  const inMonth=all.filter(a=>a.date.startsWith(S.hMonth)&&a.date<=td);
+  const byDay={};inMonth.forEach(a=>byDay[a.date]=(byDay[a.date]||0)+1);
+  const uniq=new Set(inMonth.map(a=>a.clientId||a.name.toLowerCase())).size;
+  let h=`<div class="weeknav"><button class="iconbtn" data-act="hm" data-d="-1" aria-label="Previous month">‹</button>
+    <div class="rng">${MONTHS[mo-1]} ${y}</div><button class="iconbtn" data-act="hm" data-d="1" aria-label="Next month">›</button></div>
+    <div class="stats"><div class="stat"><b>${inMonth.length}</b><span>cuts this month</span></div><div class="stat"><b>${uniq}</b><span>different clients</span></div></div>
+    <div class="cal" style="margin-top:10px">${DOW.map(d=>`<div class="h">${d[0]}</div>`).join('')}`;
+  for(let i=0;i<first.getDay();i++)h+='<button class="blank"></button>';
+  for(let d=1;d<=days;d++){const ds=`${S.hMonth}-${pad(d)}`;
+    h+=`<button data-act="hday" data-date="${ds}" class="${ds===S.hDay?'sel':''} ${ds===td?'today':''} ${ds>td?'fut':''}">${d}<span class="d">${byDay[ds]?byDay[ds]:''}</span></button>`}
+  h+='</div>';
+  const list=allAppts().filter(a=>a.date===S.hDay).sort((a,b)=>a.time.localeCompare(b.time));
+  h+=`<div class="sec">${fmtDL(S.hDay)}</div>`+(list.length?list.map(apptRow).join(''):'<div class="open">Nobody in the chair this day.</div>');
+  h+=`<div class="sec">Search all history</div><input class="search" id="hq" placeholder="Client name…" value="${esc(S.hq)}" autocomplete="off"><div id="hres"></div>
+    <div class="foot">Every appointment is kept automatically. Nothing gets erased when a new week starts.<br>Backups are in Settings (gear, top right).</div>`;
+  return h;
+}
+function renderHistSearch(){
+  const q=S.hq.trim().toLowerCase(),el=$('#hres');if(!el)return;
+  if(!q){el.innerHTML='';return}
+  const r=allAppts().filter(a=>a.name.toLowerCase().includes(q)&&a.date<=today()).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)).slice(0,100);
+  el.innerHTML=r.length?r.map(a=>`<button class="row" data-act="appt" data-id="${a.id}"><div class="main"><b>${esc(a.name)}</b><small>${fmtDL(a.date)} · ${t12s(a.time)}${a.status==='noshow'?' · no-show':''}</small></div></button>`).join(''):'<div class="open">No past visits match.</div>';
+}
+function viewRegulars(){
+  const list=Object.values(S.regulars).sort((a,b)=>a.dow-b.dow||a.time.localeCompare(b.time));
+  let h=`<div class="foot" style="padding-bottom:6px">Regulars land on your schedule automatically every week. You never have to retype them.</div>`;
+  if(!list.length)return h+'<div class="empty">No regulars yet. When you book someone, switch on <b>Every week</b>, or tap + here.</div>';
+  let cur=-1;
+  list.forEach(r=>{if(r.dow!==cur){cur=r.dow;h+=`<div class="dayh"><b>${DOW[r.dow]}</b></div>`}
+    const t=t12(r.time);
+    h+=`<button class="appt ${r.active===false?'past':''}" data-act="reg" data-id="${r.id}"><div class="t">${t.h}<sup>${t.ap}</sup></div><div class="n">${esc(r.name)}${r.note?`<small>${esc(r.note)}</small>`:''}</div>${r.active===false?'<span class="tag">PAUSED</span>':'<span class="tag rep">↻</span>'}</button>`});
+  return h;
+}
+
+/* ---------- sheets ---------- */
+function openSheet(html){$('#sbody').innerHTML=html;$('#sheet').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on');$('#sbody').innerHTML=''}
+let form={};
+function apptForm(opts){
+  // opts: {id?, date, time, name, note, phone, repeat, regOnly, regId}
+  form=Object.assign({date:today(),time:'',name:'',note:'',phone:'',repeat:false},opts);
+  const editing=!!form.id||!!form.regId;
+  const wk=weekOf(form.date);
+  const chips=[...Array(7)].map((_,i)=>{const d=addDays(wk,i);const dd=parse(d);
+    return `<button class="chip ${form.regOnly?(form.dow===i?'on':''):(d===form.date?'on':'')}" data-act="pickday" data-date="${d}" data-dow="${i}">${DOW[i]}<br>${form.regOnly?'':dd.getDate()}</button>`}).join('');
+  const isNew=!clientByName(form.name||'');
+  if(form.block){openSheet(`<h2>${form.id?'Edit blocked time':'Block off time'}</h2><div class="meta">Days off, lunch, appointments of your own. Nobody gets booked here by accident.</div>
+   <label>Label</label><input class="inp" id="fname" value="${esc(form.name||'Day off')}">
+   <label>Day</label><div class="chips">${chips}</div><input class="inp" id="fdate" type="date" value="${form.date}" style="margin-top:8px">
+   <label>Time (leave empty for all day)</label><input class="inp" id="ftime" type="time" value="${form.time}" step="300">
+   <input type="hidden" id="fnote" value="">
+   <div class="btns"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="saveappt">Save</button></div>`);return}
+  openSheet(`<h2>${form.regOnly?(form.regId?'Edit regular':'New regular'):(form.id?'Edit appointment':'Book a client')}</h2>
+   <label>Client</label><input class="inp" id="fname" value="${esc(form.name)}" placeholder="Name" autocomplete="off"><div class="sugg" id="sugg"></div>
+   <div id="phonewrap" style="${isNew?'':'display:none'}"><label>Phone (optional)</label><input class="inp" id="fphone" type="tel" value="${esc(form.phone)}" placeholder="Their number"></div>
+   <label>${form.regOnly?'Day each week':'Day'}</label><div class="chips">${chips}</div>
+   ${form.regOnly?'':`<input class="inp" id="fdate" type="date" value="${form.date}" style="margin-top:8px">`}
+   <label>Time</label><input class="inp" id="ftime" type="time" value="${form.time}" step="300">
+   <label>Note (optional)</label><input class="inp" id="fnote" value="${esc(form.note)}" placeholder="Fade, beard, kid's cut…">
+   ${form.regOnly||form.id?'':`<div class="toggle"><div><b>Every week</b><small>Put them on this day and time every week</small></div><label class="sw" style="margin:0"><input type="checkbox" id="frep" ${form.repeat?'checked':''}><span></span></label></div>`}
+   <div class="btns"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="saveappt">${editing?'Save':'Book it'}</button></div>
+   ${form.regOnly||form.id?'':'<div class="btns"><button class="btn" data-act="toblock" style="color:var(--mute)">Block off time / day off instead</button></div>'}`);
+  if(!form.name)setTimeout(()=>$('#fname')&&$('#fname').focus(),60);
+}
+function readForm(){form.name=$('#fname').value;form.time=$('#ftime').value;form.note=$('#fnote').value;
+  form.phone=$('#fphone')?$('#fphone').value:'';if($('#fdate'))form.date=$('#fdate').value||form.date;if($('#frep'))form.repeat=$('#frep').checked}
+function showSugg(){
+  if(!$('#sugg')||!$('#phonewrap'))return;
+  const v=$('#fname').value.trim().toLowerCase(),el=$('#sugg');
+  $('#phonewrap').style.display=clientByName(v)||!v?'none':'';
+  if(!v){el.innerHTML='';return}
+  const m=Object.values(S.clients).filter(c=>c.name.toLowerCase().includes(v)&&c.name.toLowerCase()!==v).slice(0,5);
+  el.innerHTML=m.map(c=>`<button data-act="sugg" data-name="${esc(c.name)}">${esc(c.name)}<small>${c.phone?esc(c.phone):''}</small></button>`).join('');
+}
+function getOrMakeClient(name,phone){
+  let c=clientByName(name);
+  if(!c){c={id:uid(),name:name.trim(),phone:phone.trim(),notes:'',created:today()};S.clients[c.id]=c;persist('clients',c.id)}
+  else if(phone.trim()&&!c.phone){c.phone=phone.trim();persist('clients',c.id)}
+  return c;
+}
+function saveAppt(){
+  readForm();
+  if(form.block){const wk=weekOf(form.date);
+    if(form.id){const f=findAppt(form.id);if(f){S.weeks[f.wk].appts=S.weeks[f.wk].appts.filter(a=>a.id!==form.id);persist('weeks',f.wk)}}
+    const{w}=getWeek(wk);w.appts.push({id:form.id||uid(),date:form.date,time:form.time||'',name:form.name.trim()||'Blocked',block:true,status:'block'});
+    persist('weeks',wk);S.week=wk;closeSheet();render();toast('Time blocked');return}
+  if(!form.name.trim())return toast('Add the client’s name');
+  if(!form.time)return toast('Pick a time');
+  const c=getOrMakeClient(form.name,form.phone);
+  if(form.regOnly){
+    if(form.dow==null)return toast('Pick a day');
+    const r=form.regId?S.regulars[form.regId]:{id:uid(),active:true,since:today()};
+    Object.assign(r,{name:c.name,clientId:c.id,dow:form.dow,time:form.time,note:form.note.trim()});
+    S.regulars[r.id]=r;persist('regulars',r.id);
+    syncRegular(r);closeSheet();render();toast(form.regId?'Regular updated':'Regular added');return;
+  }
+  let regId=null;
+  if(form.repeat){const r={id:uid(),active:true,since:form.date,name:c.name,clientId:c.id,dow:parse(form.date).getDay(),time:form.time,note:form.note.trim()};
+    S.regulars[r.id]=r;persist('regulars',r.id);regId=r.id}
+  const wk=weekOf(form.date);
+  if(form.id){
+    const f=findAppt(form.id);
+    if(f&&f.wk!==wk){S.weeks[f.wk].appts=S.weeks[f.wk].appts.filter(a=>a.id!==form.id);persist('weeks',f.wk)}
+    const{w}=getWeek(wk);let a=w.appts.find(x=>x.id===form.id);
+    const base0=f?f.a:{};
+    if(!a){a=Object.assign({},base0);w.appts.push(a)}
+    Object.assign(a,{id:form.id,date:form.date,time:form.time,name:c.name,clientId:c.id,note:form.note.trim(),status:a.status||'booked'});
+  }else{
+    const{w}=getWeek(wk);
+    w.appts.push({id:uid(),date:form.date,time:form.time,name:c.name,clientId:c.id,note:form.note.trim(),status:'booked',regularId:regId||undefined});
+  }
+  persist('weeks',wk);
+  if(regId)syncRegular(S.regulars[regId],wk);
+  S.week=wk;closeSheet();render();toast(form.id?'Saved':`${c.name} booked · ${fmtD(form.date)} ${t12s(form.time)}`);
+}
+// put/refresh a regular's upcoming instances in already-started weeks (skip a week that already has it)
+function syncRegular(r,skipWk){
+  Object.keys(S.weeks).filter(wk=>wk>=thisWeek()&&wk!==skipWk&&S.weeks[wk].seeded).forEach(wk=>{
+    const w=S.weeks[wk];const date=addDays(wk,r.dow);
+    w.appts=w.appts.filter(a=>!(a.regularId===r.id&&a.status==='booked'&&a.date>=today()&&(a.date!==date||a.time!==r.time||r.active===false)));
+    if(r.active!==false&&date>=today()&&!w.appts.some(a=>a.regularId===r.id))
+      w.appts.push({id:uid(),date,time:r.time,name:r.name,clientId:r.clientId,note:r.note||'',status:'booked',regularId:r.id});
+    persist('weeks',wk);
+  });
+}
+function apptSheet(id){
+  const f=findAppt(id);if(!f)return;const a=f.a;const c=S.clients[a.clientId];
+  if(a.block){openSheet(`<h2>${esc(a.name)}</h2><div class="meta">${fmtDL(a.date)} · ${a.time?t12s(a.time):'All day'}</div>
+    <div class="btns"><button class="btn" data-act="edit" data-id="${a.id}">Edit</button><button class="btn danger" data-act="del" data-id="${a.id}">Remove</button></div>`);return}
+  const prev=c?visitsFor(c).filter(v=>v.id!==a.id&&v.date<a.date)[0]:null;
+  const past=a.date<today();
+  openSheet(`<h2>${esc(a.name)}</h2><div class="meta">${fmtDL(a.date)} · ${t12s(a.time)}${a.regularId?' · ↻ weekly':''}${a.status==='noshow'?' · <span style="color:var(--red)">No-show</span>':''}</div>
+    ${c&&c.phone?`<div class="phone">${esc(c.phone)}</div><div class="btns" style="margin-top:0"><a class="btn pri" href="tel:${telHref(c.phone)}">Call</a><a class="btn pri" href="sms:${telHref(c.phone)}">Text</a></div>
+      ${!past&&a.status==='booked'?`<div class="btns" style="margin-top:10px"><a class="btn" href="${smsHref(c.phone,fillTpl(SET().tplRemind,a,c))}">Send reminder text</a></div>`:''}`:''}
+    ${a.note?`<label>Note</label><div class="note">${esc(a.note)}</div>`:''}
+    ${c&&c.notes?`<label>About ${esc(c.name.split(' ')[0])}</label><div class="note">${esc(c.notes)}</div>`:''}
+    <label>Previous cut</label><div class="note">${prev?`${fmtDL(prev.date)} (${daysBetween(prev.date,a.date)} days before)`:'First visit on record'}</div>
+    <label>Book again, same time</label><div class="chips">${againDates(a.date).map(d=>`<button class="chip" style="width:calc((100% - 18px)/4);padding:11px 0" data-act="again" data-id="${a.id}" data-date="${d}">${DOW[parse(d).getDay()]}<br><span style="color:var(--mute)">${fmtD(d)}</span></button>`).join('')}</div>
+    <div class="btns">${c?`<button class="btn" data-act="client" data-id="${c.id}">Client card</button>`:''}<button class="btn" data-act="edit" data-id="${a.id}">Edit</button></div>
+    <div class="btns" style="margin-top:10px"><button class="btn warn" data-act="noshow" data-id="${a.id}">${a.status==='noshow'?'Undo no-show':'No-show'}</button>
+    <button class="btn danger" data-act="del" data-id="${a.id}">${past?'Delete':'Cancel appt'}</button></div>`);
+}
+function clientSheet(id){
+  const c=S.clients[id];if(!c)return;const v=visitsFor(c);const nx=nextVisit(c);
+  let gaps='';if(v.length>2){const g=[];for(let i=0;i<Math.min(v.length-1,6);i++)g.push(daysBetween(v[i+1].date,v[i].date));gaps=` · usually every ${Math.round(g.reduce((s,x)=>s+x,0)/g.length)} days`}
+  const reg=Object.values(S.regulars).find(r=>r.clientId===c.id&&r.active!==false);
+  openSheet(`<h2>${esc(c.name)}</h2><div class="meta">${v.length} cut${v.length===1?'':'s'} on record${gaps}</div>
+   ${c.phone?`<div class="phone">${esc(c.phone)}</div><div class="btns" style="margin-top:0"><a class="btn pri" href="tel:${telHref(c.phone)}">Call</a><a class="btn pri" href="sms:${telHref(c.phone)}">Text</a></div>`:''}
+   ${c.bday?`<label>Birthday</label><div class="note">🎂 ${MONTHS[+c.bday.slice(0,2)-1]} ${+c.bday.slice(3)}</div>`:''}
+   ${nx?`<label>Next up</label><div class="note">${fmtDL(nx.date)} · ${t12s(nx.time)}</div>`:''}
+   ${reg?`<label>Regular</label><div class="note">Every ${DOW[reg.dow]} at ${t12s(reg.time)}</div>`:''}
+   <label>Notes: how they like it, family, anything</label><textarea class="inp" id="cnotes" placeholder="e.g. #2 guard, low taper, son is Marcus">${esc(c.notes||'')}</textarea>
+   <div class="btns"><button class="btn pri" data-act="book" data-id="${c.id}">Book ${esc(c.name.split(' ')[0])}</button><button class="btn" data-act="savenotes" data-id="${c.id}">Save notes</button></div>
+   <label>Visit history</label><div class="hist">${v.length?v.map(x=>`<div><span>${fmtDL(x.date)}${x.note?' · '+esc(x.note):''}</span><span>${t12s(x.time)}</span></div>`).join(''):'<div><span>No past visits yet</span></div>'}</div>
+   <div class="btns"><button class="btn" data-act="editclient" data-id="${c.id}">Edit name / phone</button></div>`);
+}
+function editClientSheet(id){const c=S.clients[id];
+  openSheet(`<h2>Edit client</h2><label>Name</label><input class="inp" id="ecn" value="${esc(c.name)}"><label>Phone</label><input class="inp" id="ecp" type="tel" value="${esc(c.phone||'')}">
+   <label>Birthday (the year doesn't matter)</label><input class="inp" id="ecb" type="date" value="${c.bday?'2000-'+c.bday:''}">
+   <div class="btns"><button class="btn" data-act="client" data-id="${id}">Back</button><button class="btn pri" data-act="saveclient" data-id="${id}">Save</button></div>
+   <div class="btns"><button class="btn danger" data-act="delclient" data-id="${id}">Remove client</button></div>
+   <div class="foot" style="padding:10px 0 0">Removing a client keeps their past visits in your history.</div>`)}
+function regSheet(id){const r=S.regulars[id];
+  openSheet(`<h2>${esc(r.name)}</h2><div class="meta">Every ${DOW[r.dow]} at ${t12s(r.time)}${r.active===false?' · paused':''}</div>
+   <div class="btns"><button class="btn" data-act="editreg" data-id="${id}">Change day / time</button><button class="btn warn" data-act="pausereg" data-id="${id}">${r.active===false?'Resume':'Pause'}</button></div>
+   <div class="btns"><button class="btn danger" data-act="delreg" data-id="${id}">Stop being a regular</button></div>
+   <div class="foot" style="padding:10px 0 0">Pausing or stopping only clears upcoming slots. Past visits stay in history.</div>`)}
+
+function settingsSheet(){const st=SET();
+  openSheet(`<h2>Settings</h2>
+   <label>Your name (used in texts)</label><input class="inp" id="s_barber" value="${esc(st.barber)}" placeholder="e.g. Redd">
+   <label>Reminder before each client${NATIVE?'':' (Android app only)'}</label>
+   <select class="inp" id="s_mins">${[[0,'Off'],[15,'15 minutes before'],[30,'30 minutes before'],[60,'1 hour before'],[120,'2 hours before']].map(([v,l])=>`<option value="${v}" ${+st.remindMins===v?'selected':''}>${l}</option>`).join('')}</select>
+   <div class="toggle"><div><b>Morning lineup</b><small>A note each workday with who's coming in${NATIVE?'':' (Android app only)'}</small></div><label class="sw" style="margin:0"><input type="checkbox" id="s_morning" ${st.morning?'checked':''}><span></span></label></div>
+   <input class="inp" id="s_mtime" type="time" value="${st.morningTime}" style="margin-top:8px">
+   <label>Flag a client as due after (days, if they don't have a pattern yet)</label><input class="inp" id="s_due" type="number" min="7" max="90" value="${st.dueDays}">
+   <label>Reminder text</label><textarea class="inp" id="s_tr">${esc(st.tplRemind)}</textarea>
+   <label>"Ready for a cut?" text</label><textarea class="inp" id="s_td">${esc(st.tplDue)}</textarea>
+   <div class="foot" style="padding:6px 0 0">{first} = client's first name · {me} = your name · {day} and {time} = the appointment</div>
+   <div class="btns"><button class="btn pri" data-act="savesettings">Save settings</button></div>
+   <label style="margin-top:26px">Backup</label>
+   <div class="btns" style="margin-top:0"><button class="btn" data-act="backupjson">${NATIVE?'Save backup file':'Copy backup'}</button><label class="btn" style="margin:0;text-transform:none;letter-spacing:0;color:var(--text);font-size:15px">Restore backup<input type="file" id="restorefile" accept=".json,application/json,text/plain" style="display:none"></label></div>
+   <div class="btns"><button class="btn" data-act="backup">Copy history as spreadsheet (CSV)</button></div>
+   <div class="foot" style="padding:10px 0 0">${NATIVE?'Your book lives on this phone. Save a backup file to Google Drive now and then so you never lose it.':'Your book is saved to your Claude account.'}</div>`)}
+async function saveSettings(){const st=Object.assign(SET(),{barber:$('#s_barber').value.trim(),remindMins:+$('#s_mins').value,morning:$('#s_morning').checked,
+  morningTime:$('#s_mtime').value||'08:00',dueDays:Math.max(7,Math.min(90,+$('#s_due').value||21)),tplRemind:$('#s_tr').value.trim()||DEF.tplRemind,tplDue:$('#s_td').value.trim()||DEF.tplDue});
+  S.meta.settings=st;persist('meta','settings');if(NATIVE)await initNotifications();closeSheet();render();toast('Settings saved')}
+async function backupJson(){const j=blob();
+  if(NATIVE&&P('Filesystem')&&P('Share')){try{const r=await P('Filesystem').writeFile({path:`chairbook-backup-${today()}.json`,data:j,directory:'CACHE',encoding:'utf8'});
+      await P('Share').share({title:'Chair Book backup',text:`Chair Book backup ${today()}`,url:r.uri,dialogTitle:'Save your backup'});}catch(e){if(!/cancel/i.test(String(e&&e.message)))toast("Couldn't make the backup file")}return}
+  try{await navigator.clipboard.writeText(j);toast('Backup copied. Paste it into a note or email to yourself.')}
+  catch(e){openSheet(`<h2>Backup</h2><div class="meta">Select all and copy:</div><textarea class="inp" style="min-height:50vh" readonly>${esc(j)}</textarea><div class="btns"><button class="btn" data-act="close">Done</button></div>`)}}
+let restoreData=null;
+async function readRestore(file){try{const j=JSON.parse(await file.text());if(j.app!=='chairbook'||!j.weeks)throw 0;restoreData=j;
+  const n=Object.values(j.weeks).reduce((s,w)=>s+(w.appts||[]).length,0);
+  openSheet(`<h2>Restore backup?</h2><div class="meta">${n} appointments and ${Object.keys(j.clients||{}).length} clients. This replaces what's in the app now.</div>
+   <div class="btns"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="dorestore">Restore</button></div>`)}catch(e){toast("That file isn't a Chair Book backup")}}
+function doRestore(){const j=restoreData;if(!j)return;
+  KINDS.forEach(k=>{const old=Object.keys(S[k]);S[k]=j[k]||{};if(S.mode==='cloud'){new Set([...old,...Object.keys(S[k])]).forEach(id=>persist(k,id))}});
+  if(S.mode!=='cloud')saveLocal();restoreData=null;closeSheet();render();toast('Backup restored')}
+
+/* ---------- reminders (Android app) ---------- */
+let notifReady=false,remT;
+async function initNotifications(){const LN=P('LocalNotifications');if(!NATIVE||!LN)return;
+  try{let p=await LN.checkPermissions();if(p.display!=='granted')p=await LN.requestPermissions();notifReady=p.display==='granted';
+    if(notifReady){try{await LN.createChannel({id:'appts',name:'Appointments',description:'Client reminders and morning lineup',importance:4,vibration:true})}catch(e){}}
+  }catch(e){notifReady=false}
+  scheduleReminders()}
+function scheduleReminders(){if(!NATIVE)return;clearTimeout(remT);remT=setTimeout(async()=>{const LN=P('LocalNotifications');if(!LN||!notifReady)return;
+  try{const pend=await LN.getPending();if(pend.notifications&&pend.notifications.length)await LN.cancel({notifications:pend.notifications.map(n=>({id:n.id}))});
+    const st=SET(),now=Date.now(),td=today(),until=addDays(td,14),list=[];let nid=1;
+    const at=(date,time)=>{const d=parse(date);const[h,m]=time.split(':').map(Number);d.setHours(h,m,0,0);return d};
+    const up=allAppts().filter(a=>!a.block&&a.status==='booked'&&a.date>=td&&a.date<=until&&a.time).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+    if(st.remindMins>0)up.forEach(a=>{const t=new Date(at(a.date,a.time).getTime()-st.remindMins*60000);if(t.getTime()>now+30000){const c=S.clients[a.clientId];
+      list.push({id:nid++,title:`${a.name} at ${t12s(a.time)}`,body:(a.note?a.note+' · ':'')+(c&&c.notes?c.notes.slice(0,80):'In the chair soon'),channelId:'appts',schedule:{at:t,allowWhileIdle:true}})}});
+    if(st.morning)for(let i=0;i<=14;i++){const d=addDays(td,i);const day=up.filter(a=>a.date===d);const bd=bdaysOn(d);if(!day.length&&!bd.length)continue;
+      const t=at(d,st.morningTime);if(t.getTime()<=now+30000)continue;
+      let body=day.length?`First up: ${day[0].name} at ${t12s(day[0].time)}`+(day.length>1?` · then ${day.slice(1,4).map(a=>firstName(a.name)).join(', ')}${day.length>4?'…':''}`:''):'';
+      if(bd.length)body+=(body?' · ':'')+`🎂 ${bd.map(c=>firstName(c.name)).join(', ')}'s birthday`;
+      list.push({id:nid++,title:day.length?`${day.length} in the chair today`:'Birthday today',body,channelId:'appts',schedule:{at:t,allowWhileIdle:true}})}
+    if(list.length)await LN.schedule({notifications:list.slice(0,60)});
+  }catch(e){}},600)}
+
+/* ---------- events ---------- */
+let armed=null;
+function confirmTap(key,el,label){if(armed===key){armed=null;return true}armed=key;el.textContent=label;setTimeout(()=>{if(armed===key)armed=null},3000);return false}
+document.addEventListener('click',async e=>{
+  const nb=e.target.closest('nav button');if(nb){S.tab=nb.dataset.tab;if(S.tab==='week')ensureWeek(S.week);render();window.scrollTo(0,0);return}
+  const el=e.target.closest('[data-act]');if(!el)return;const act=el.dataset.act,id=el.dataset.id;
+  switch(act){
+    case'close':closeSheet();break;
+    case'settings':settingsSheet();break;
+    case'savesettings':saveSettings();break;
+    case'backupjson':backupJson();break;
+    case'dorestore':doRestore();break;
+    case'toblock':{readForm();form.block=true;form.name='Day off';apptForm(form);break}
+    case'again':{const f=findAppt(id);if(!f)return;const a=f.a,d=el.dataset.date,wk=weekOf(d);const{w}=getWeek(wk);
+      if(w.appts.some(x=>x.clientId===a.clientId&&x.date===d&&!x.block)){toast(`${firstName(a.name)} is already booked ${fmtD(d)}`);break}
+      w.appts.push({id:uid(),date:d,time:a.time,name:a.name,clientId:a.clientId,note:a.note||'',status:'booked'});persist('weeks',wk);
+      closeSheet();S.week=wk;S.tab='week';render();window.scrollTo(0,0);toast(`${firstName(a.name)} booked · ${fmtD(d)} ${t12s(a.time)}`);break}
+    case'wk':{const d=+el.dataset.d;S.week=d===0?thisWeek():addDays(S.week,d);ensureWeek(S.week);render();window.scrollTo(0,0);break}
+    case'add':{if(S.mode==='loading')return;
+      if(S.tab==='regulars')apptForm({regOnly:true,dow:null});
+      else{const td=today();const d=el.dataset.date||(S.week===thisWeek()?td:S.week);apptForm({date:d})}break}
+    case'pickday':{readForm();if(form.regOnly){form.dow=+el.dataset.dow}else{form.date=el.dataset.date}apptForm(form);break}
+    case'sugg':$('#fname').value=el.dataset.name;showSugg();$('#ftime').focus();break;
+    case'saveappt':saveAppt();break;
+    case'appt':apptSheet(id);break;
+    case'edit':{const f=findAppt(id);if(!f)return;if(f.a.block){apptForm({id,block:true,date:f.a.date,time:f.a.time,name:f.a.name});break}const c=S.clients[f.a.clientId];apptForm({id,date:f.a.date,time:f.a.time,name:f.a.name,note:f.a.note||'',phone:c?c.phone:''});break}
+    case'noshow':{const f=findAppt(id);f.a.status=f.a.status==='noshow'?'booked':'noshow';persist('weeks',f.wk);apptSheet(id);render();break}
+    case'del':{if(!confirmTap('del'+id,el,'Tap again to confirm'))return;const f=findAppt(id);S.weeks[f.wk].appts=S.weeks[f.wk].appts.filter(a=>a.id!==id);persist('weeks',f.wk);closeSheet();render();toast('Removed');break}
+    case'client':clientSheet(id);break;
+    case'book':{const c=S.clients[id];const d=S.week===thisWeek()?today():S.week;apptForm({name:c.name,phone:c.phone||'',date:d});break}
+    case'savenotes':{S.clients[id].notes=$('#cnotes').value.trim();persist('clients',id);toast('Notes saved');break}
+    case'editclient':editClientSheet(id);break;
+    case'saveclient':{const c=S.clients[id];const n=$('#ecn').value.trim();if(!n)return toast('Name can’t be blank');
+      const other=clientByName(n);if(other&&other.id!==id)return toast('You already have a client with that name');
+      c.name=n;c.phone=$('#ecp').value.trim();const bv=$('#ecb').value;c.bday=bv?bv.slice(5):'';persist('clients',id);
+      Object.keys(S.weeks).forEach(wk=>{let ch=false;S.weeks[wk].appts.forEach(a=>{if(a.clientId===id&&a.name!==n){a.name=n;ch=true}});if(ch)persist('weeks',wk)});
+      Object.values(S.regulars).forEach(r=>{if(r.clientId===id&&r.name!==n){r.name=n;persist('regulars',r.id)}});
+      clientSheet(id);render();break}
+    case'delclient':{if(!confirmTap('dc'+id,el,'Tap again to remove'))return;delete S.clients[id];persist('clients',id);closeSheet();render();toast('Client removed');break}
+    case'reg':regSheet(id);break;
+    case'editreg':{const r=S.regulars[id];apptForm({regOnly:true,regId:id,dow:r.dow,time:r.time,name:r.name,note:r.note||''});break}
+    case'pausereg':{const r=S.regulars[id];r.active=r.active===false;persist('regulars',id);syncRegular(r);regSheet(id);render();break}
+    case'delreg':{if(!confirmTap('dr'+id,el,'Tap again to confirm'))return;const r=S.regulars[id];r.active=false;syncRegular(r);delete S.regulars[id];persist('regulars',id);closeSheet();render();toast('Removed from regulars');break}
+    case'hm':{const[y,m]=S.hMonth.split('-').map(Number);const d=new Date(y,m-1+(+el.dataset.d),1);S.hMonth=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;S.hDay=`${S.hMonth}-01`;render();break}
+    case'hday':S.hDay=el.dataset.date;render();break;
+    case'backup':{const rows=[['Date','Day','Time','Client','Phone','Note','Status']];
+      allAppts().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).forEach(a=>{const c=S.clients[a.clientId];rows.push([a.date,DOW[parse(a.date).getDay()],t12s(a.time),a.name,c?c.phone||'':'',a.note||'',a.status==='noshow'?'No-show':(a.date<=today()?'Cut':'Booked')])});
+      const csv=rows.map(r=>r.map(x=>/[",\n]/.test(x)?`"${String(x).replace(/"/g,'""')}"`:x).join(',')).join('\n');
+      try{await navigator.clipboard.writeText(csv);toast(`Copied ${rows.length-1} appointments`)}
+      catch(err){openSheet(`<h2>Backup</h2><div class="meta">Select all and copy:</div><textarea class="inp" style="min-height:50vh" readonly>${esc(csv)}</textarea><div class="btns"><button class="btn" data-act="close">Done</button></div>`)}
+      break}
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='cq'){S.cq=e.target.value;renderClientList()}
+  else if(e.target.id==='hq'){S.hq=e.target.value;renderHistSearch()}
+  else if(e.target.id==='fname')showSugg();
+  else if(e.target.id==='fdate'){readForm();apptForm(form)}
+});
+document.addEventListener('change',e=>{if(e.target.id==='restorefile'&&e.target.files[0])readRestore(e.target.files[0])});
+// Android back button: close sheet, then go to Week, then leave
+if(NATIVE&&P('App'))P('App').addListener('backButton',()=>{if($('#sheet').classList.contains('on'))closeSheet();else if(S.tab!=='week'){S.tab='week';render()}else P('App').minimizeApp()});
+// refresh reminders when the app comes back to the front
+if(NATIVE&&P('App'))P('App').addListener('resume',()=>{scheduleReminders();render()});
+// roll over to the new week automatically if the page stays open past Saturday night
+setInterval(()=>{const tw=thisWeek();if(S._tw&&S._tw!==tw&&S.week===S._tw){S.week=tw;ensureWeek(tw);render()}S._tw=tw},60000);
+S._tw=thisWeek();
+initStore();
+</script>
+</body>
+</html>

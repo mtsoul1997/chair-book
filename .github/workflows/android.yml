@@ -1,0 +1,58 @@
+name: Build Android app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Install
+        run: npm ci
+
+      - name: Copy app into Android project
+        run: npx cap sync android
+
+      - name: Build installable APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk ChairBook.apk
+
+      - name: Keep the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChairBook-apk
+          path: ChairBook.apk
+
+      - name: Publish download link (Releases page)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Chair Book build ${{ github.run_number }}
+          body: |
+            Open this page on your Android phone and tap **ChairBook.apk** to install.
+            First time: Android will ask you to allow installs from your browser. Allow it, then install.
+          files: ChairBook.apk
+          prerelease: true
